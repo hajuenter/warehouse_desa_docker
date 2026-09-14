@@ -100,7 +100,22 @@ Setelah container berhasil berjalan, buka browser dan akses:
 
 Monitoring Web akan menampilkan dashboard monitoring data dan aktivitas sinkronisasi desa yang diterima oleh Receiver.
 
----
+### 4. Login Monitoring Web
+
+Gunakan akun administrator default berikut:
+
+| Konfigurasi | Nilai       |
+| ----------- | ----------- |
+| Username    | `admin`     |
+| Password    | `Admin123@` |
+
+> **Catatan:** Untuk keamanan, disarankan mengganti password default apabila digunakan pada lingkungan production.
+
+> **Selesai.** Seluruh proses instalasi **WAREHOUSE DESA** telah selesai.
+
+Untuk melihat kembali alur instalasi atau panduan keseluruhan sistem, silakan kembali ke README utama:
+
+👉 [Kembali ke README Utama](../README.md)
 
 ## Opsional: Install Ulang
 
@@ -118,28 +133,8 @@ docker-compose up -d
 
 > **Catatan:** Perintah `docker-compose down` hanya menghentikan dan menghapus container Monitoring Web. Tidak menghapus database Receiver maupun data desa.
 
----
-
 ## Akses Layanan
 
 | Layanan        | URL                   |
 | -------------- | --------------------- |
 | Monitoring Web | http://localhost:8090 |
-
----
-
-### Docker Network `wh_shared` tidak ditemukan
-
-Jika muncul error bahwa network `wh_shared` tidak ditemukan, buat network tersebut dari folder mana saja:
-
-```bash
-docker network create wh_shared
-```
-
-Kemudian jalankan kembali:
-
-```bash
-docker-compose up -d
-```
-
-> **Catatan:** Dalam instalasi normal, network `wh_shared` sudah dibuat pada tahap awal melalui [README utama](../README.md).
