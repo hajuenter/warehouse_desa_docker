@@ -256,6 +256,9 @@ Setelah data berhasil ditambahkan, desa tersebut akan terdaftar pada database Re
 
 ---
 
+Lanjut ke monitoring web
+👉 [Panduan Menjalankan Monitoring Web](../monitoring_web/README.md)
+
 ## Opsional: Install Ulang
 
 Jika ingin melakukan instalasi ulang dari awal, jalankan:
