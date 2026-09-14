@@ -1,6 +1,12 @@
 # Monitoring Web Docker
 
-Dashboard monitoring untuk memantau riwayat sinkronisasi data desa secara real-time.
+Dashboard monitoring untuk memantau aktivitas dan riwayat sinkronisasi data desa secara terpusat.
+
+Monitoring Web dijalankan menggunakan Docker dan terhubung ke service lainnya melalui Docker network:
+
+```text
+wh_shared
+```
 
 ## Prasyarat
 
@@ -8,45 +14,109 @@ Pastikan sudah menginstall:
 
 - [Docker](https://www.docker.com/)
 
+Pastikan juga Docker network `wh_shared` sudah dibuat.
+
+Jika mengikuti panduan dari README utama, network tersebut sudah dibuat pada tahap awal instalasi.
+
+Untuk memastikan network tersedia, jalankan:
+
+```bash
+docker network ls
+```
+
+Pastikan terdapat:
+
+```text
+wh_shared
+```
+
+> **Catatan:** Jangan membuat network `wh_shared` kembali jika network tersebut sudah tersedia.
+
 ## Cara Install
 
-### 1. Download file yang diperlukan
+### 1. Masuk ke Folder Monitoring Web
 
-Download file berikut:
+Setelah repository berhasil di-clone, masuk ke folder `monitoring_web`:
 
-- `docker-compose.yml`
+```bash
+cd warehouse_desa_docker/monitoring_web
+```
+
+Folder `monitoring_web` sudah tersedia di dalam repository sehingga file yang diperlukan tidak perlu didownload secara manual.
+
+Struktur folder:
+
+```text
+warehouse_desa_docker/
+
+├── README.md
+├── receiver/
+├── opensid/
+├── monitoring_web/
+│   ├── docker-compose.yml
+│   └── README.md
+└── sql_setup/
+```
 
 ### 2. Jalankan Docker
 
-Buka terminal pada folder tersebut, kemudian jalankan:
+Pastikan terminal berada di folder:
+
+```text
+warehouse_desa_docker/monitoring_web
+```
+
+Kemudian jalankan:
 
 ```bash
 docker-compose up -d
 ```
 
-Tunggu beberapa saat hingga container berhasil berjalan.
+Docker Compose akan menjalankan container Monitoring Web.
+
+Periksa status container:
+
+```bash
+docker-compose ps
+```
+
+Pastikan container:
+
+```text
+monitoring_web
+```
+
+memiliki status:
+
+```text
+Up
+```
 
 ### 3. Buka Monitoring Web
 
-Buka browser dan akses:
+Setelah container berhasil berjalan, buka browser dan akses:
 
 **http://localhost:8090**
 
+Monitoring Web akan menampilkan dashboard monitoring data dan aktivitas sinkronisasi desa yang diterima oleh Receiver.
+
 ---
 
-## Opsional Install Ulang
+## Opsional: Install Ulang
 
-Jika ingin melakukan instalasi ulang dari awal, jalankan:
+Jika ingin menjalankan ulang container Monitoring Web, jalankan:
 
 ```bash
 docker-compose down
 ```
 
-Setelah itu jalankan kembali:
+Kemudian jalankan kembali:
 
 ```bash
 docker-compose up -d
 ```
+
+> **Catatan:** Perintah `docker-compose down` hanya menghentikan dan menghapus container Monitoring Web. Tidak menghapus database Receiver maupun data desa.
 
 ---
 
@@ -58,20 +128,18 @@ docker-compose up -d
 
 ---
 
-## Perintah Docker
+### Docker Network `wh_shared` tidak ditemukan
 
-| Perintah                 | Fungsi                               |
-| ------------------------ | ------------------------------------ |
-| `docker-compose up -d`   | Menjalankan container di background  |
-| `docker-compose down`    | Menghentikan dan menghapus container |
-| `docker-compose restart` | Restart container                    |
-
----
-
-**Container tidak bisa start**
-
-Cek logs:
+Jika muncul error bahwa network `wh_shared` tidak ditemukan, buat network tersebut dari folder mana saja:
 
 ```bash
-docker-compose logs
+docker network create wh_shared
 ```
+
+Kemudian jalankan kembali:
+
+```bash
+docker-compose up -d
+```
+
+> **Catatan:** Dalam instalasi normal, network `wh_shared` sudah dibuat pada tahap awal melalui [README utama](../README.md).
