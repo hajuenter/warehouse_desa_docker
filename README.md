@@ -111,3 +111,15 @@ Selanjutnya jalankan **Monitoring Web Terpusat**.
 Ikuti panduan instalasi dan konfigurasi pada README berikut:
 
 👉 [Panduan Menjalankan Monitoring Web](./monitoring_web/README.md)
+
+---
+
+## License
+
+Copyright (c) 2026 **hajuenter**
+
+This project is licensed under the **MIT License**.
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this software, subject to the conditions of the MIT License.
+
+See the [LICENSE](./LICENSE) file for the full license text.
