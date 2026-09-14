@@ -1,0 +1,38 @@
+services:
+  receiver:
+    image: hajuenter/receiver:latest
+    container_name: receiver
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "3307:3306"
+    environment:
+      DB_HOST: "127.0.0.1"
+      DB_PASSWORD: ${DB_PASSWORD:-rahasia123}
+      JWT_SECRET: ${JWT_SECRET:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123@}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      CORS_ORIGIN: "http://localhost:8090"
+    networks:
+      - wh_shared
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: receiver_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: receiver
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rahasia123}
+    depends_on:
+      - receiver
+    networks:
+      - wh_shared
+
+networks:
+  wh_shared:
+    external: true

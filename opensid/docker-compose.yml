@@ -1,0 +1,86 @@
+services:
+  app:
+    image: hajuenter/opensid:latest
+    container_name: opensid_app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - opensid_net
+      - wh_shared
+
+  db:
+    image: mariadb:10.11
+    container_name: opensid_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - opensid_net
+      - wh_shared
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: opensid_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - opensid_net
+
+  sender:
+    image: hajuenter/sender_opensid:latest
+    container_name: opensid_sender
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_DATABASE}
+      DESA_KODE: ${DESA_KODE}
+      WEBHOOK_TOKEN: ${WEBHOOK_TOKEN}
+      WEBHOOK_URL: ${WEBHOOK_URL}
+      WEBHOOK_TIMEOUT: ${WEBHOOK_TIMEOUT:-10}
+      MAX_RETRY: ${MAX_RETRY:-5}
+      POLL_INTERVAL: ${POLL_INTERVAL:-3}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - opensid_net
+      - wh_shared
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  opensid_net:
+    driver: bridge
+  wh_shared:
+    external: true
