@@ -19,6 +19,7 @@ services:
     container_name: opensid_db
     restart: unless-stopped
     environment:
+      TZ: Asia/Jakarta
       MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MARIADB_DATABASE: ${DB_DATABASE}
       MARIADB_USER: ${DB_USERNAME}

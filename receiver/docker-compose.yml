@@ -7,6 +7,7 @@ services:
       - "3000:3000"
       - "3307:3306"
     environment:
+      TZ: Asia/Jakarta
       DB_HOST: "127.0.0.1"
       DB_PASSWORD: ${DB_PASSWORD:-rahasia123}
       JWT_SECRET: ${JWT_SECRET:-}
