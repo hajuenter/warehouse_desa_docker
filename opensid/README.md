@@ -30,6 +30,7 @@ warehouse_desa_docker/
 │   ├── .env.example
 │   └── README.md
 ├── monitoring_web/
+├── sender_only/
 └── sql_setup/
 ```
 
