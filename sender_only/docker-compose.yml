@@ -1,0 +1,17 @@
+services:
+  sender:
+    image: hajuenter/sender_opensid:latest
+    container_name: sender_desa
+    restart: unless-stopped
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DESA_KODE: ${DESA_KODE}
+      WEBHOOK_TOKEN: ${WEBHOOK_TOKEN}
+      WEBHOOK_URL: ${WEBHOOK_URL}
+      WEBHOOK_TIMEOUT: ${WEBHOOK_TIMEOUT:-10}
+      MAX_RETRY: ${MAX_RETRY:-5}
+      POLL_INTERVAL: ${POLL_INTERVAL:-3}
