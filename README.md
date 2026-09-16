@@ -27,6 +27,7 @@ warehouse_desa_docker/
 ├── receiver/
 ├── opensid/
 ├── monitoring_web/
+├── sender_only/
 └── sql_setup/
 ```
 
@@ -97,7 +98,15 @@ Pada tahap tersebut, gunakan data dari tabel `config` OpenSID:
 
 Data tersebut digunakan untuk mendaftarkan desa pada database Receiver.
 
-## 5. Menjalankan Monitoring Web
+## 5. Alternatif: OpenSID Sudah Terpasang dan Terhosting
+
+Jika desa **sudah memiliki** instance OpenSID yang berjalan di server lain (tidak dikelola oleh repository ini), tidak perlu menginstal ulang OpenSID. Cukup pasang **Sender** saja pada server desa tersebut.
+
+Panduan lengkap:
+
+👉 [Panduan Sender Only](./sender_only/README.md)
+
+## 6. Menjalankan Monitoring Web
 
 Setelah:
 
