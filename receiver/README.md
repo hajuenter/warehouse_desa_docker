@@ -70,7 +70,31 @@ Buka file `.env` dan isi konfigurasi sesuai kebutuhan.
 | `SMTP_USER`      | Username SMTP              |
 | `SMTP_PASS`      | Password SMTP              |
 
-> **Catatan:** Untuk keamanan, gunakan password dan secret key yang berbeda dari nilai default ketika digunakan pada lingkungan production.
+> **Catatan:** Jika `DB_PASSWORD` pada file `.env` dikosongkan, Docker Compose akan menggunakan nilai default `rahasia123` sebagai password database MariaDB.
+>
+> Contoh:
+>
+> ```env
+> DB_PASSWORD=
+> ```
+>
+> akan menggunakan:
+>
+> ```text
+> DB_PASSWORD=rahasia123
+> ```
+>
+> Jika `DB_PASSWORD` diisi dengan nilai tertentu, maka nilai tersebut yang akan digunakan.
+>
+> Contoh:
+>
+> ```env
+> DB_PASSWORD=Password123!
+> ```
+>
+> maka password database yang digunakan adalah `Password123!`.
+
+> **Catatan keamanan:** Password dan secret key default hanya ditujukan untuk lingkungan development/local. Untuk lingkungan production, gunakan password dan secret key yang berbeda, kuat, dan unik.
 
 ### 4. Jalankan Docker
 
@@ -97,6 +121,10 @@ docker-compose ps
 ```
 
 Pastikan container yang dibutuhkan memiliki status **Up**.
+
+Buka phpMyAdmin Receiver:
+
+**http://localhost:8082**
 
 Database `desa_induk` akan otomatis dibuat dengan tabel berikut:
 
@@ -151,7 +179,7 @@ Contoh menggunakan cURL:
 ```bash
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d "{\"username\":\"admin\",\"password\":\"admin123@\"}"
+  -d "{\"username\":\"admin\",\"password\":\"Admin123@\"}"
 ```
 
 Jika login berhasil, API akan mengembalikan response yang berisi informasi token yang dapat digunakan untuk mengakses endpoint Receiver yang membutuhkan autentikasi.
@@ -219,13 +247,33 @@ Kemudian:
 
 1. Login ke phpMyAdmin menggunakan akun database Receiver.
 
-| Konfigurasi | Nilai        |
-| ----------- | ------------ |
-| Server      | `receiver`   |
-| Username    | `root`       |
-| Password    | `rahasia123` |
+| Konfigurasi | Nilai                                |
+| ----------- | ------------------------------------ |
+| Server      | `receiver`                           |
+| Username    | `root`                               |
+| Password    | Nilai `DB_PASSWORD` pada file `.env` |
 
-> **Catatan:** Nilai password mengikuti konfigurasi pada file `.env`.
+Jika `DB_PASSWORD` dikosongkan, password default yang digunakan adalah:
+
+```text
+rahasia123
+```
+
+Contoh jika `.env` berisi:
+
+```env
+DB_PASSWORD=Password123!
+```
+
+maka gunakan:
+
+```text
+Server   : receiver
+Username : root
+Password : Password123!
+```
+
+> **Catatan:** Password phpMyAdmin mengikuti nilai `DB_PASSWORD` pada file `.env`.
 
 2. Pilih database:
 
