@@ -2,7 +2,51 @@
 
 Panduan menjalankan **WAREHOUSE DESA** yang terdiri dari **Receiver, OpenSID, Sender, dan Monitoring Web Terpusat**.
 
-Proses instalasi terdiri dari beberapa tahap. **Pastikan setiap tahap selesai sebelum melanjutkan ke tahap berikutnya.**
+👉 [Spesifikasi Project](./SPECIFICATION.md)
+
+## Persyaratan
+
+Sebelum menjalankan **WAREHOUSE DESA**, pastikan perangkat/server sudah memiliki:
+
+- **Git** — digunakan untuk melakukan clone repository.
+- **Docker** — digunakan untuk menjalankan container aplikasi.
+- **Docker Compose** — digunakan untuk mengatur dan menjalankan service pada project.
+
+Pastikan **Docker dan Docker Compose sudah terinstall dan dapat digunakan** pada perangkat/server.
+
+### Cek Instalasi Docker
+
+Jalankan:
+
+```bash
+docker --version
+```
+
+Contoh:
+
+```text
+Docker version 28.x.x
+```
+
+### Cek Instalasi Docker Compose
+
+Jalankan:
+
+```bash
+docker-compose --version
+```
+
+Contoh:
+
+```text
+docker-compose version 1.x.x
+```
+
+Jika kedua perintah tersebut berhasil dijalankan, berarti Docker dan Docker Compose sudah siap digunakan.
+
+> **Catatan:** Project ini menggunakan perintah `docker-compose`. Pastikan Docker Compose sudah tersedia sebelum melanjutkan proses instalasi.
+
+Proses instalasi terdiri dari beberapa tahap.
 
 ## 1. Clone Repository
 
