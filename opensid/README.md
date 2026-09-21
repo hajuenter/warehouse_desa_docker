@@ -2,11 +2,14 @@
 
 Docker setup untuk menjalankan **OpenSID dan Sender** secara lokal menggunakan Docker Compose.
 
+> **Arsitektur:** OpenSID dan Sender.
+
 ## Prasyarat
 
 Pastikan sudah menginstall:
 
 - [Docker](https://www.docker.com/)
+- **Receiver** sudah dijalankan terlebih dahulu
 
 ## Cara Install
 
@@ -53,15 +56,12 @@ Isi file `.env` sesuai dengan konfigurasi yang diperlukan.
 Contoh konfigurasi:
 
 ```env
-# Database
-DB_HOST=db
+# Database (MySQL dari receiver)
+DB_HOST=receiver
 DB_PORT=3306
 DB_DATABASE=opensid
-DB_USERNAME=opensid
-DB_PASSWORD=opensid_secret
-
-# MySQL root password
-MYSQL_ROOT_PASSWORD=root_secret
+DB_USERNAME=root
+DB_PASSWORD=
 
 # Sender Config
 DESA_KODE=
@@ -71,6 +71,39 @@ WEBHOOK_TIMEOUT=10
 MAX_RETRY=5
 POLL_INTERVAL=3
 ```
+
+> **Catatan:** `DB_PASSWORD` harus sama dengan password database Receiver yang dikonfigurasi pada file `.env` di folder `receiver`.
+>
+> Jika `DB_PASSWORD` pada `.env` Receiver dikosongkan, Docker Compose Receiver akan menggunakan nilai default:
+>
+> ```text
+> rahasia123
+> ```
+>
+> Contoh:
+>
+> ```env
+> # receiver/.env
+> DB_PASSWORD=
+> ```
+>
+> maka password database yang digunakan adalah:
+>
+> ```text
+> rahasia123
+> ```
+>
+> Namun, jika `.env` Receiver berisi:
+>
+> ```env
+> DB_PASSWORD=Password123!
+> ```
+>
+> maka `DB_PASSWORD` pada `.env` OpenSID juga harus menggunakan password yang sama:
+>
+> ```env
+> DB_PASSWORD=Password123!
+> ```
 
 > **Catatan:** `DESA_KODE` dan `WEBHOOK_TOKEN` akan dikonfigurasi setelah proses instalasi OpenSID dan setup database selesai.
 
@@ -91,8 +124,6 @@ docker-compose up -d
 Docker Compose akan membuat dan menjalankan container:
 
 - OpenSID
-- MariaDB
-- phpMyAdmin
 - Sender
 
 Periksa status container:
@@ -103,29 +134,21 @@ docker-compose ps
 
 Pastikan container yang dibutuhkan memiliki status **Up**.
 
-### 4. Periksa Database OpenSID
+### 4. Buat Database OpenSID di Receiver
 
-Sebelum melakukan instalasi OpenSID, buka phpMyAdmin:
+Sebelum melakukan instalasi OpenSID, buka phpMyAdmin dari receiver:
 
-**http://localhost:8081**
+**http://localhost:8082**
 
-Login menggunakan akun database yang telah dikonfigurasi pada file `.env`.
+Login menggunakan akun database receiver.
 
-| Konfigurasi | Nilai            |
-| ----------- | ---------------- |
-| Server      | `db`             |
-| Username    | `opensid`        |
-| Password    | `opensid_secret` |
-
-Pastikan database dengan nama:
+Buat database baru dengan nama:
 
 ```text
 opensid
 ```
 
-sudah berhasil dibuat.
-
-> **Catatan:** Pada tahap ini database `opensid` dapat masih dalam keadaan kosong. Tabel-tabel OpenSID akan dibuat secara otomatis selama proses instalasi dan migrasi OpenSID.
+> **Catatan:** Database `opensid` ini akan digunakan oleh OpenSID. Tabel-tabel OpenSID akan dibuat secara otomatis selama proses instalasi.
 
 ### 5. Install OpenSID
 
@@ -137,14 +160,38 @@ Ikuti proses instalasi OpenSID hingga selesai.
 
 Jika diminta mengisi konfigurasi database, gunakan:
 
-| Konfigurasi   | Nilai            |
-| ------------- | ---------------- |
-| Database Host | `db`             |
-| Database Name | `opensid`        |
-| Username      | `opensid`        |
-| Password      | `opensid_secret` |
+| Konfigurasi   | Nilai                                    |
+| ------------- | ---------------------------------------- |
+| Database Host | `receiver`                               |
+| Database Name | `opensid`                                |
+| Username      | `root`                                   |
+| Password      | Nilai `DB_PASSWORD` pada `.env` Receiver |
 
-Kemudian lanjutkan proses instalasi.
+> **Catatan:** Password database harus sama dengan `DB_PASSWORD` yang digunakan oleh container Receiver.
+>
+> Jika `DB_PASSWORD` pada `.env` Receiver dikosongkan, gunakan password default:
+>
+> ```text
+> rahasia123
+> ```
+>
+> Jika `DB_PASSWORD` diisi dengan nilai lain, gunakan nilai tersebut sebagai password database OpenSID.
+>
+> Contoh:
+>
+> ```env
+> # receiver/.env
+> DB_PASSWORD=Password123!
+> ```
+>
+> maka konfigurasi database OpenSID adalah:
+>
+> | Konfigurasi   | Nilai          |
+> | ------------- | -------------- |
+> | Database Host | `receiver`     |
+> | Database Name | `opensid`      |
+> | Username      | `root`         |
+> | Password      | `Password123!` |
 
 ### 6. Login ke Web Desa OpenSID
 
@@ -162,9 +209,9 @@ Pastikan konfigurasi desa sudah sesuai sebelum melanjutkan ke tahap berikutnya.
 
 ### 7. Pastikan Database OpenSID Sudah Terisi
 
-Setelah proses instalasi dan konfigurasi OpenSID selesai, buka kembali:
+Setelah proses instalasi dan konfigurasi OpenSID selesai, buka phpMyAdmin dari receiver:
 
-**http://localhost:8081**
+**http://localhost:8082**
 
 Kemudian pilih database:
 
@@ -198,18 +245,19 @@ warehouse_desa_docker/
     └── setup-trigger-desa.sql
 ```
 
-Jalankan SQL tersebut melalui phpMyAdmin.
+Jalankan SQL tersebut melalui phpMyAdmin receiver.
 
-#### Melalui phpMyAdmin
+#### Melalui phpMyAdmin (Receiver)
 
-1. Buka **http://localhost:8081**
-2. Pilih database `opensid`
-3. Buka menu **SQL**
-4. Buka file SQL dari folder `sql_setup`
-5. Salin isi file SQL
-6. Paste ke editor SQL phpMyAdmin
-7. Jalankan query
-8. Ulangi untuk file SQL berikutnya
+1. Buka **http://localhost:8082**
+2. Login menggunakan akun database receiver
+3. Pilih database `opensid`
+4. Buka menu **SQL**
+5. Buka file SQL dari folder `sql_setup`
+6. Salin isi file SQL
+7. Paste ke editor SQL phpMyAdmin
+8. Jalankan query
+9. Ulangi untuk file SQL berikutnya
 
 Pastikan seluruh query berhasil dijalankan tanpa error.
 
@@ -348,16 +396,15 @@ Setelah container berjalan, buka kembali:
 **http://localhost:8080/install**
 
 > ⚠️ **Perhatian:**
-> Perintah `docker-compose down -v` akan menghapus volume Docker, termasuk database yang tersimpan di dalamnya. Pastikan sudah melakukan backup jika terdapat data penting.
+> Database `opensid` berada di receiver. Saat install ulang, hapus database `opensid` di receiver terlebih dahulu sebelum menjalankan instalasi baru.
 
 ---
 
 ## Akses Layanan
 
-| Layanan    | URL                   |
-| ---------- | --------------------- |
-| OpenSID    | http://localhost:8080 |
-| phpMyAdmin | http://localhost:8081 |
+| Layanan | URL                   |
+| ------- | --------------------- |
+| OpenSID | http://localhost:8080 |
 
 ---
 
