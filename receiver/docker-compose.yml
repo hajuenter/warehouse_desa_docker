@@ -11,7 +11,7 @@ services:
       DB_HOST: "127.0.0.1"
       DB_PASSWORD: ${DB_PASSWORD:-rahasia123}
       JWT_SECRET: ${JWT_SECRET:-}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123@}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin123@}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
